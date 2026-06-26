@@ -14,4 +14,9 @@
     <ProjectReference Include="..\..\..\ServiceScheduler.Backend.ServiceDefaults\ServiceScheduler.Backend.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Requests\" />
+  </ItemGroup>
+
 </Project>

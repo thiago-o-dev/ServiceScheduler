@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Slices\Clients\" />
+    <Folder Include="Events\" />
+    <Folder Include="Slices\" />
+    <Folder Include="Slices\Services\" />
+    <Folder Include="Slices\Schedules\" />
+    <Folder Include="Slices\Workers\" />
+  </ItemGroup>
+
 </Project>
