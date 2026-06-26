@@ -1,0 +1,28 @@
+{
+  "realm": "service-scheduler",
+  "enabled": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationAllowed": false,
+  "clients": [
+    {
+      "clientId": "service-scheduler-app",
+      "name": "Service Scheduler App",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [ "*" ],
+      "webOrigins": [ "*" ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "worker", "description": "Trabalhador que oferta serviços" },
+      { "name": "client", "description": "Cliente que agenda serviços" }
+    ],
+    "client": {}
+  }
+}

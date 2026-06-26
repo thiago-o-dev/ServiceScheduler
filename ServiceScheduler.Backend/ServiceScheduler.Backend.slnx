@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Aspire/">
+    <Project Path="ServiceScheduler.Backend.AppHost/ServiceScheduler.Backend.AppHost.csproj" />
+    <Project Path="ServiceScheduler.Backend.ServiceDefaults/ServiceScheduler.Backend.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="BuildingBlocks/Messaging/Messaging.csproj" />
+    <Project Path="BuildingBlocks/Persistence/Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/Gateway/">
+    <Project Path="Api.Gateway/Api.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/ServiceScheduler/">
+    <File Path="Services/ServiceScheduler/README.md" />
+    <Project Path="Services/ServiceScheduler/ServiceScheduler.Api/ServiceScheduler.Api.csproj" />
+    <Project Path="Services/ServiceScheduler/ServiceScheduler.Application/ServiceScheduler.Application.csproj" />
+    <Project Path="Services/ServiceScheduler/ServiceScheduler.Domain/ServiceScheduler.Domain.csproj" />
+    <Project Path="Services/ServiceScheduler/ServiceScheduler.Infrastructure/ServiceScheduler.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/SharedKernel/">
+    <Project Path="SharedKernel/SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
