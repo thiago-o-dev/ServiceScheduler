@@ -1,4 +1,5 @@
-﻿using ServiceScheduler.Domain.ValueObjects;
+﻿using ServiceScheduler.Domain.Exceptions;
+using ServiceScheduler.Domain.ValueObjects;
 using SharedKernel.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ public static class WorkerPolicy
             for (int i = 1; i < ordered.Count; i++)
             {
                 if (ordered[i].StartTime < ordered[i - 1].EndTime)
-                    throw new DomainValidationException($"Existem períodos de disponibilidade sobrepostos para {day.Key}.");
+                    throw new DomainOverlaidException($"Existem períodos de disponibilidade sobrepostos para {day.Key}.");
             }
         }
     }
@@ -77,7 +78,7 @@ public static class WorkerPolicy
         for (int i = 1; i < ordered.Count; i++)
         {
             if (ordered[i].Start < ordered[i - 1].End)
-                throw new DomainValidationException("Existem períodos de indisponibilidade sobrepostos.");
+                throw new DomainOverlaidException("Existem períodos de indisponibilidade sobrepostos.");
         }
     }
 
@@ -90,7 +91,7 @@ public static class WorkerPolicy
             period.StartTime < x.EndTime &&
             period.EndTime > x.StartTime))
         {
-            throw new DomainValidationException("O período informado sobrepõe outro período de disponibilidade.");
+            throw new DomainOverlaidException("O período informado sobrepõe outro período de disponibilidade.");
         }
     }
 
@@ -102,7 +103,7 @@ public static class WorkerPolicy
             period.Start < x.End &&
             period.End > x.Start))
         {
-            throw new DomainValidationException("O período informado sobrepõe outro período de indisponibilidade.");
+            throw new DomainOverlaidException("O período informado sobrepõe outro período de indisponibilidade.");
         }
     }
 }
