@@ -16,8 +16,4 @@
     <ProjectReference Include="..\ServiceScheduler.Infrastructure\ServiceScheduler.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Requests\" />
-  </ItemGroup>
-
 </Project>
