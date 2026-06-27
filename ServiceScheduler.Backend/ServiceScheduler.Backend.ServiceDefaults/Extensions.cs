@@ -7,6 +7,8 @@ using Microsoft.Extensions.ServiceDiscovery;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using SharedKernel.Abstractions.CQRS;
+using System.Reflection;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -123,5 +125,24 @@ public static class Extensions
         }
 
         return app;
+    }
+    /// <summary>
+    /// padrão scrutor lindo
+    /// </summary>
+    /// <typeparam name="TBuilder"></typeparam>
+    /// <param name="builder"></param>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
+    public static TBuilder AddCQRSPipeline<TBuilder>(
+        this TBuilder builder,
+        Assembly assembly) where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<,>)))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime());
+
+        return builder;
     }
 }
