@@ -4,18 +4,18 @@ using System.Net.Mail;
 
 namespace ServiceScheduler.Domain.Policies;
 
-public static class ClientPolicy
+public static class CustomerPolicy
 {
-    public static void EnsureCanCreateClient(Client client)
+    public static void EnsureCanCreateCustomer(Customer customer)
     {
-        if (client.Name.Length < 2)
+        if (customer.Name.Length < 2)
         {
             throw new DomainValidationException("Nome deve ser maior que duas letras");
         }
 
         try
         {
-            _ = new MailAddress(client.Email);
+            _ = new MailAddress(customer.Email);
         }
         catch
         {

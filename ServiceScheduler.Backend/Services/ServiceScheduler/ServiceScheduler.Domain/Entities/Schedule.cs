@@ -6,7 +6,7 @@ namespace ServiceScheduler.Domain.Entities;
 
 public class Schedule : LifeCycleEntity
 {
-    public Guid ClientId { get; private set; }
+    public Guid CustomerId { get; private set; }
     public Guid WorkerId { get; private set; }
     public ICollection<Guid> ServiceIds { get; private set; } = new List<Guid>();
     public DateTime ScheduledAt { get; private set; }
@@ -14,10 +14,10 @@ public class Schedule : LifeCycleEntity
 
     private Schedule() { }
 
-    public static Schedule Create(Guid clientId, Guid workerId, ICollection<Guid> serviceIds, DateTime scheduledAt, TimeSpan duration)
+    public static Schedule Create(Guid customerId, Guid workerId, ICollection<Guid> serviceIds, DateTime scheduledAt, TimeSpan duration)
     {
-        if (clientId.Equals(Guid.Empty))
-            throw new DomainValidationException("Id do Cliente não pode ser vazio");
+        if (customerId.Equals(Guid.Empty))
+            throw new DomainValidationException("Id do Customere não pode ser vazio");
 
         if (workerId.Equals(Guid.Empty))
             throw new DomainValidationException("Id do Trabalhador não pode ser vazio");
@@ -28,7 +28,7 @@ public class Schedule : LifeCycleEntity
 
         var schedule = new Schedule
         {
-            ClientId = clientId,
+            CustomerId = customerId,
             WorkerId = workerId,
             ServiceIds = serviceIds,
             ScheduledAt = scheduledAt,
@@ -57,10 +57,10 @@ public class Schedule : LifeCycleEntity
         Touch();
     }
 
-    public void Update(Guid clientId, Guid workerId, ICollection<Guid> serviceIds, DateTime scheduledAt, TimeSpan duration)
+    public void Update(Guid customerId, Guid workerId, ICollection<Guid> serviceIds, DateTime scheduledAt, TimeSpan duration)
     {
-        if (clientId.Equals(Guid.Empty))
-            throw new DomainValidationException("Id do Cliente não pode ser vazio");
+        if (customerId.Equals(Guid.Empty))
+            throw new DomainValidationException("Id do Customere não pode ser vazio");
 
         if (workerId.Equals(Guid.Empty))
             throw new DomainValidationException("Id do Trabalhador não pode ser vazio");
@@ -69,7 +69,7 @@ public class Schedule : LifeCycleEntity
         SchedulePolicy.EnsureScheduledAtIsInFuture(scheduledAt);
         SchedulePolicy.EnsureDurationIsWithinAllowedRange(duration);
 
-        ClientId = clientId;
+        CustomerId = customerId;
         WorkerId = workerId;
         ServiceIds = serviceIds;
         ScheduledAt = scheduledAt;

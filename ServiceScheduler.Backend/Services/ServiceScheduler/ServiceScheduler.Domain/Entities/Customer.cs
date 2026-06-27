@@ -7,16 +7,16 @@ using System.Text;
 
 namespace ServiceScheduler.Domain.Entities;
 
-public class Client : LifeCycleEntity
+public class Customer : LifeCycleEntity
 {
     // não vou guardar cpf pq ninguem gosta de dar cpf nessas coisas
     public string Name { get; private set; } = string.Empty;
     public string Phone { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
 
-    private Client() { }
+    private Customer() { }
 
-    public static Client Create(string name, string phone, string email)
+    public static Customer Create(string name, string phone, string email)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainValidationException("Nome é obrigatório.");
@@ -25,18 +25,18 @@ public class Client : LifeCycleEntity
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainValidationException("Email é obrigatório.");
 
-        var client = new Client
+        var customer = new Customer
         {
             Name = name.Trim(),
             Phone = phone.Trim(),
             Email = email.Trim(),
         };
 
-        ClientPolicy.EnsureCanCreateClient(client);
+        CustomerPolicy.EnsureCanCreateCustomer(customer);
 
         // TODO: estourar evento pro mailhog pra mostrar q foi criado um novo usuário
 
-        return client;
+        return customer;
     }
 
     public void Update(string name, string phone)

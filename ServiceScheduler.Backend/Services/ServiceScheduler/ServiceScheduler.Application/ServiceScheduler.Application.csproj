@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Slices\Clients\" />
     <Folder Include="Events\" />
-    <Folder Include="Slices\" />
-    <Folder Include="Slices\Services\" />
-    <Folder Include="Slices\Schedules\" />
-    <Folder Include="Slices\Workers\" />
+    <Folder Include="Features\Admin\" />
+    <Folder Include="Features\Services\" />
+    <Folder Include="Features\Schedules\" />
+    <Folder Include="Features\Workers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\..\..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\ServiceScheduler.Domain\ServiceScheduler.Domain.csproj" />
   </ItemGroup>
 
 </Project>

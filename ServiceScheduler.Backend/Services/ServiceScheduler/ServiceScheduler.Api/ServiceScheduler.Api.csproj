@@ -12,10 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\ServiceScheduler.Backend.ServiceDefaults\ServiceScheduler.Backend.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\ServiceScheduler.Application\ServiceScheduler.Application.csproj" />
+    <ProjectReference Include="..\ServiceScheduler.Infrastructure\ServiceScheduler.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Requests\" />
   </ItemGroup>
 
