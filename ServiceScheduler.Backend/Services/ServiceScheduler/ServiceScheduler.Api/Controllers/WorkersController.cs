@@ -7,6 +7,6 @@ namespace ServiceScheduler.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class ServiceController : ControllerBase
+public class WorkersController : ControllerBase
 {
 }
