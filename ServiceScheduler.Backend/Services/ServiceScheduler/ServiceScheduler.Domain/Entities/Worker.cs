@@ -1,4 +1,4 @@
-﻿using ServiceScheduler.Domain.Policies;
+using ServiceScheduler.Domain.Policies;
 using ServiceScheduler.Domain.ValueObjects;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
@@ -123,5 +123,104 @@ public class Worker : LifeCycleEntity
                 current.Reason));
 
         Touch();
+    }
+
+    public IEnumerable<DateTimeInterval> GetAvailablePeriods(DateTime start, DateTime end, IEnumerable<Schedule> workerSchedules)
+    {
+        if (start >= end)
+            throw new DomainValidationException("A data de início deve ser anterior à data de término.");
+
+        var availableIntervals = new List<DateTimeInterval>();
+
+        // 1. Generate candidate intervals from AvailablePeriods for each day in range
+        for (var date = start.Date; date <= end.Date; date = date.AddDays(1))
+        {
+            var dayPeriods = AvailablePeriods.Where(p => p.DayOfWeek == date.DayOfWeek);
+            foreach (var period in dayPeriods)
+            {
+                var periodStart = date.Add(period.StartTime);
+                var periodEnd = date.Add(period.EndTime);
+
+                // Clip to query range [start, end]
+                var actualStart = periodStart > start ? periodStart : start;
+                var actualEnd = periodEnd < end ? periodEnd : end;
+
+                if (actualStart < actualEnd)
+                {
+                    availableIntervals.Add(new DateTimeInterval(actualStart, actualEnd));
+                }
+            }
+        }
+
+        // 2. Collect all blockers (UnavailablePeriods + active Schedules)
+        var blockers = new List<DateTimeInterval>();
+
+        // Add unavailable periods that overlap with [start, end]
+        foreach (var up in UnavailablePeriods)
+        {
+            if (up.Start < end && up.End > start)
+            {
+                var blockStart = up.Start > start ? up.Start : start;
+                var blockEnd = up.End < end ? up.End : end;
+                if (blockStart < blockEnd)
+                {
+                    blockers.Add(new DateTimeInterval(blockStart, blockEnd));
+                }
+            }
+        }
+
+        // Add active schedules that overlap with [start, end]
+        foreach (var schedule in workerSchedules)
+        {
+            if (schedule.Status != ScheduleStatus.Canceled)
+            {
+                var schedStart = schedule.ScheduledAt;
+                var schedEnd = schedule.ScheduledAt + schedule.Duration;
+
+                if (schedStart < end && schedEnd > start)
+                {
+                    var blockStart = schedStart > start ? schedStart : start;
+                    var blockEnd = schedEnd < end ? schedEnd : end;
+                    if (blockStart < blockEnd)
+                    {
+                        blockers.Add(new DateTimeInterval(blockStart, blockEnd));
+                    }
+                }
+            }
+        }
+
+        // Sort blockers by start time to make subtraction clean
+        var sortedBlockers = blockers.OrderBy(b => b.Start).ToList();
+
+        // 3. Subtract blockers from available intervals
+        var result = new List<DateTimeInterval>(availableIntervals);
+
+        foreach (var blocker in sortedBlockers)
+        {
+            var nextResult = new List<DateTimeInterval>();
+            foreach (var av in result)
+            {
+                if (blocker.End <= av.Start || blocker.Start >= av.End)
+                {
+                    // No overlap
+                    nextResult.Add(av);
+                }
+                else
+                {
+                    // Overlap
+                    if (blocker.Start > av.Start)
+                    {
+                        nextResult.Add(new DateTimeInterval(av.Start, blocker.Start));
+                    }
+                    if (blocker.End < av.End)
+                    {
+                        nextResult.Add(new DateTimeInterval(blocker.End, av.End));
+                    }
+                }
+            }
+            result = nextResult;
+        }
+
+        return result.OrderBy(r => r.Start).ToList();
     }
 }
