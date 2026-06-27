@@ -8,5 +8,5 @@ public interface IClientRepository
     Task<IReadOnlyList<Client>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Client?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Client?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
-    Task<Client?> FindDuplicateAsync(string cpf, string email, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

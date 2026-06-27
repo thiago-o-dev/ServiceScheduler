@@ -10,7 +10,7 @@ public sealed class CreateClientCommandHandler(IClientRepository clientRepositor
 {
     public async Task<Guid> HandleAsync(CreateClientCommand command, CancellationToken cancellationToken = default)
     {
-        if (await clientRepository.GetByEmailAsync(command.Email, cancellationToken) is not null)
+        if (await clientRepository.ExistsByEmailAsync(command.Email, cancellationToken))
             throw new DuplicateEntityException($"Um cliente com o email '{command.Email}' já existe.");
 
         var owner = Client.Create(command.Name, command.Phone, command.Email);
