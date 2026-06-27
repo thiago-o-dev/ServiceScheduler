@@ -22,5 +22,7 @@
   <Folder Name="/src/SharedKernel/">
     <Project Path="SharedKernel/SharedKernel.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="ServiceScheduler.Backend.UnitTests/ServiceScheduler.Backend.UnitTests.csproj" Id="68046c64-b4d3-4f56-bc8a-f97ae28e99a1" />
+  </Folder>
 </Solution>
