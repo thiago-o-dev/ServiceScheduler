@@ -1,4 +1,7 @@
 using System.Reflection.Metadata;
+using Microsoft.EntityFrameworkCore;
+using ServiceScheduler.Infrastructure.Persistence;
+using ServiceScheduler.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +12,18 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.AddCQRSPipeline(typeof(AssemblyReference).Assembly);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SchedulerDbContext>();
+    //db.Database.EnsureCreated();
+    await db.Database.MigrateAsync();
+}
 
 app.MapDefaultEndpoints();
 
