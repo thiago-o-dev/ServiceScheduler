@@ -56,3 +56,24 @@ public sealed class ListWorkersQueryHandler(IWorkerRepository workerRepository)
         )).ToList();
     }
 }
+
+public sealed record GetWorkerAvailablePeriodsQuery(Guid WorkerId, DateTime Start, DateTime End) : IQueryRequest<IReadOnlyList<DateTimeIntervalDto>>;
+
+public sealed class GetWorkerAvailablePeriodsQueryHandler(
+    IWorkerRepository workerRepository,
+    IScheduleRepository scheduleRepository) 
+    : IRequestHandler<GetWorkerAvailablePeriodsQuery, IReadOnlyList<DateTimeIntervalDto>>
+{
+    public async Task<IReadOnlyList<DateTimeIntervalDto>> HandleAsync(GetWorkerAvailablePeriodsQuery query, CancellationToken cancellationToken = default)
+    {
+        var worker = await workerRepository.GetByIdAsync(query.WorkerId, cancellationToken)
+            ?? throw new NotFoundException($"Prestador com ID '{query.WorkerId}' não encontrado.");
+
+        var schedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
+
+        var availablePeriods = worker.GetAvailablePeriods(query.Start, query.End, schedules);
+
+        return availablePeriods.Select(p => new DateTimeIntervalDto(p.Start, p.End)).ToList();
+    }
+}
+
