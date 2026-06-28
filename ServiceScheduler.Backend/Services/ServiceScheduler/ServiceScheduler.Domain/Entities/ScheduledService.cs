@@ -1,5 +1,3 @@
-using System;
-
 namespace ServiceScheduler.Domain.Entities;
 
 public class ScheduledService

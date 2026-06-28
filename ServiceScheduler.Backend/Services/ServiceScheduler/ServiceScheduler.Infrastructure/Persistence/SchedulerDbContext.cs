@@ -2,7 +2,6 @@ using BuildingBlocks.Persistence.EntityFramework;
 using BuildingBlocks.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 using ServiceScheduler.Domain.Entities;
-using System;
 
 namespace ServiceScheduler.Infrastructure.Persistence;
 

@@ -2,11 +2,6 @@ using ServiceScheduler.Application.Abstractions;
 using ServiceScheduler.Domain.Entities;
 using ServiceScheduler.Domain.Policies;
 using SharedKernel.Abstractions.CQRS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Dashboard;
 

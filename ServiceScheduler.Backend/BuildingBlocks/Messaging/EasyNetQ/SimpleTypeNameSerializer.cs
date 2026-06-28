@@ -1,5 +1,5 @@
-using System.Collections.Concurrent;
 using EasyNetQ;
+using System.Collections.Concurrent;
 
 namespace BuildingBlocks.Messaging.EasyNetQ;
 

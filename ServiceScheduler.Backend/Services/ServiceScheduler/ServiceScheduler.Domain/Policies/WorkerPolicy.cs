@@ -1,10 +1,7 @@
 ﻿using ServiceScheduler.Domain.Exceptions;
 using ServiceScheduler.Domain.ValueObjects;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Net.Mail;
-using System.Text;
 
 namespace ServiceScheduler.Domain.Policies;
 

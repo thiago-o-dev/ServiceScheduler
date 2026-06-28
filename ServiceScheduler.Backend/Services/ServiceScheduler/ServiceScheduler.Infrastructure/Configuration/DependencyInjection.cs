@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using ServiceScheduler.Application.Abstractions;
 using ServiceScheduler.Infrastructure.Persistence;
 using ServiceScheduler.Infrastructure.Persistence.Repositories;
-using System;
 
 namespace ServiceScheduler.Infrastructure.Configuration;
 

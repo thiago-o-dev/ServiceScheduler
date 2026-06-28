@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace ServiceScheduler.Application.Features.Workers;
 
 public record AvailablePeriodDto(DayOfWeek DayOfWeek, string StartTime, string EndTime);

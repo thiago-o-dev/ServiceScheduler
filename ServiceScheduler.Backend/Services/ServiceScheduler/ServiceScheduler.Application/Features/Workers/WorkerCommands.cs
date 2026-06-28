@@ -5,15 +5,12 @@ using ServiceScheduler.Domain.Entities;
 using ServiceScheduler.Domain.ValueObjects;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Workers;
 
 public sealed record CreateWorkerCommand(string Name, string Phone, string Email, string Cpf) : ICommandRequest<Guid>;
 
-public sealed class CreateWorkerCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class CreateWorkerCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<CreateWorkerCommand, Guid>
 {
     public async Task<Guid> HandleAsync(CreateWorkerCommand command, CancellationToken cancellationToken = default)
@@ -32,7 +29,7 @@ public sealed class CreateWorkerCommandHandler(IWorkerRepository workerRepositor
 
 public sealed record UpdateWorkerCommand(Guid Id, string Name, string Phone, string Email, string Cpf) : ICommandRequest;
 
-public sealed class UpdateWorkerCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class UpdateWorkerCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateWorkerCommand, Unit>
 {
     public async Task<Unit> HandleAsync(UpdateWorkerCommand command, CancellationToken cancellationToken = default)
@@ -49,7 +46,7 @@ public sealed class UpdateWorkerCommandHandler(IWorkerRepository workerRepositor
 
 public sealed record AddAvailablePeriodCommand(Guid WorkerId, DayOfWeek DayOfWeek, string StartTime, string EndTime) : ICommandRequest;
 
-public sealed class AddAvailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class AddAvailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<AddAvailablePeriodCommand, Unit>
 {
     public async Task<Unit> HandleAsync(AddAvailablePeriodCommand command, CancellationToken cancellationToken = default)
@@ -70,7 +67,7 @@ public sealed class AddAvailablePeriodCommandHandler(IWorkerRepository workerRep
 
 public sealed record RemoveAvailablePeriodCommand(Guid WorkerId, DayOfWeek DayOfWeek, string StartTime, string EndTime) : ICommandRequest;
 
-public sealed class RemoveAvailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class RemoveAvailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<RemoveAvailablePeriodCommand, Unit>
 {
     public async Task<Unit> HandleAsync(RemoveAvailablePeriodCommand command, CancellationToken cancellationToken = default)
@@ -91,7 +88,7 @@ public sealed class RemoveAvailablePeriodCommandHandler(IWorkerRepository worker
 
 public sealed record AddUnavailablePeriodCommand(Guid WorkerId, DateTime Start, DateTime End, string? Reason) : ICommandRequest;
 
-public sealed class AddUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class AddUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<AddUnavailablePeriodCommand, Unit>
 {
     public async Task<Unit> HandleAsync(AddUnavailablePeriodCommand command, CancellationToken cancellationToken = default)
@@ -110,7 +107,7 @@ public sealed class AddUnavailablePeriodCommandHandler(IWorkerRepository workerR
 
 public sealed record RemoveUnavailablePeriodCommand(Guid WorkerId, DateTime Start, DateTime End) : ICommandRequest;
 
-public sealed class RemoveUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class RemoveUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<RemoveUnavailablePeriodCommand, Unit>
 {
     public async Task<Unit> HandleAsync(RemoveUnavailablePeriodCommand command, CancellationToken cancellationToken = default)
@@ -129,7 +126,7 @@ public sealed class RemoveUnavailablePeriodCommandHandler(IWorkerRepository work
 
 public sealed record PreemptUnavailablePeriodCommand(Guid WorkerId, DateTime EndDate) : ICommandRequest;
 
-public sealed class PreemptUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork) 
+public sealed class PreemptUnavailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<PreemptUnavailablePeriodCommand, Unit>
 {
     public async Task<Unit> HandleAsync(PreemptUnavailablePeriodCommand command, CancellationToken cancellationToken = default)

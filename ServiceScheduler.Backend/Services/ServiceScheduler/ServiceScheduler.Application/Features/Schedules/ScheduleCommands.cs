@@ -4,11 +4,6 @@ using ServiceScheduler.Domain.Entities;
 using ServiceScheduler.Domain.Policies;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Schedules;
 
@@ -261,7 +256,7 @@ public sealed class AdminUpdateScheduleCommandHandler(
 
 public sealed record ConfirmScheduleCommand(Guid Id) : ICommandRequest;
 
-public sealed class ConfirmScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork) 
+public sealed class ConfirmScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<ConfirmScheduleCommand, Unit>
 {
     public async Task<Unit> HandleAsync(ConfirmScheduleCommand command, CancellationToken cancellationToken = default)
@@ -278,7 +273,7 @@ public sealed class ConfirmScheduleCommandHandler(IScheduleRepository scheduleRe
 
 public sealed record CancelScheduleCommand(Guid Id) : ICommandRequest;
 
-public sealed class CancelScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork) 
+public sealed class CancelScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<CancelScheduleCommand, Unit>
 {
     public async Task<Unit> HandleAsync(CancelScheduleCommand command, CancellationToken cancellationToken = default)
@@ -295,7 +290,7 @@ public sealed class CancelScheduleCommandHandler(IScheduleRepository scheduleRep
 
 public sealed record UpdateServiceStatusInScheduleCommand(Guid ScheduleId, Guid ServiceId, string Status) : ICommandRequest;
 
-public sealed class UpdateServiceStatusInScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork) 
+public sealed class UpdateServiceStatusInScheduleCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateServiceStatusInScheduleCommand, Unit>
 {
     public async Task<Unit> HandleAsync(UpdateServiceStatusInScheduleCommand command, CancellationToken cancellationToken = default)

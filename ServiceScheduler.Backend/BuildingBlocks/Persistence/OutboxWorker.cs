@@ -1,4 +1,3 @@
-using System.Text.Json;
 using BuildingBlocks.Messaging.Abstractions;
 using BuildingBlocks.Persistence.EntityFramework;
 using BuildingBlocks.Persistence.Models;
@@ -6,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace BuildingBlocks.Persistence;
 

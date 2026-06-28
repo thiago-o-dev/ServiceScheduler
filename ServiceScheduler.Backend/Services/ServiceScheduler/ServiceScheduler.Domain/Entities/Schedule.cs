@@ -1,9 +1,6 @@
 using ServiceScheduler.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ServiceScheduler.Domain.Entities;
 

@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ServiceScheduler.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ServiceScheduler.Infrastructure.Persistence.Configurations;
 

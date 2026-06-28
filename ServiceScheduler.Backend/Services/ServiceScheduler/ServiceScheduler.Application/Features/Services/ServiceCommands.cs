@@ -3,15 +3,12 @@ using ServiceScheduler.Application.Abstractions;
 using ServiceScheduler.Domain.Entities;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Services;
 
 public sealed record CreateServiceCommand(string Name, string Description, decimal Value) : ICommandRequest<Guid>;
 
-public sealed class CreateServiceCommandHandler(IServiceRepository serviceRepository, IUnitOfWork unitOfWork) 
+public sealed class CreateServiceCommandHandler(IServiceRepository serviceRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<CreateServiceCommand, Guid>
 {
     public async Task<Guid> HandleAsync(CreateServiceCommand command, CancellationToken cancellationToken = default)
@@ -27,7 +24,7 @@ public sealed class CreateServiceCommandHandler(IServiceRepository serviceReposi
 
 public sealed record UpdateServiceCommand(Guid Id, string Name, string Description, decimal Value) : ICommandRequest;
 
-public sealed class UpdateServiceCommandHandler(IServiceRepository serviceRepository, IUnitOfWork unitOfWork) 
+public sealed class UpdateServiceCommandHandler(IServiceRepository serviceRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateServiceCommand, Unit>
 {
     public async Task<Unit> HandleAsync(UpdateServiceCommand command, CancellationToken cancellationToken = default)

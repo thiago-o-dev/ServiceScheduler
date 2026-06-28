@@ -3,11 +3,6 @@ using ServiceScheduler.Domain.Entities;
 using ServiceScheduler.Domain.Policies;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Schedules;
 

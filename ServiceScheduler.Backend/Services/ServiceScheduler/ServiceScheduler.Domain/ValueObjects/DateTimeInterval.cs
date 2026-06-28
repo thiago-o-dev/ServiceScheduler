@@ -1,5 +1,4 @@
 using SharedKernel.Exceptions;
-using System;
 
 namespace ServiceScheduler.Domain.ValueObjects;
 

@@ -1,19 +1,13 @@
 using ServiceScheduler.Application.Abstractions;
+using ServiceScheduler.Application.Features.Workers;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ServiceScheduler.Application.Features.Workers;
 
 namespace ServiceScheduler.Application.Features.Services;
 
 public sealed record GetServiceByIdQuery(Guid Id) : IQueryRequest<ServiceDto>;
 
-public sealed class GetServiceByIdQueryHandler(IServiceRepository serviceRepository) 
+public sealed class GetServiceByIdQueryHandler(IServiceRepository serviceRepository)
     : IRequestHandler<GetServiceByIdQuery, ServiceDto>
 {
     public async Task<ServiceDto> HandleAsync(GetServiceByIdQuery query, CancellationToken cancellationToken = default)
@@ -27,7 +21,7 @@ public sealed class GetServiceByIdQueryHandler(IServiceRepository serviceReposit
 
 public sealed record ListServicesQuery : IQueryRequest<IReadOnlyList<ServiceDto>>;
 
-public sealed class ListServicesQueryHandler(IServiceRepository serviceRepository) 
+public sealed class ListServicesQueryHandler(IServiceRepository serviceRepository)
     : IRequestHandler<ListServicesQuery, IReadOnlyList<ServiceDto>>
 {
     public async Task<IReadOnlyList<ServiceDto>> HandleAsync(ListServicesQuery query, CancellationToken cancellationToken = default)
@@ -38,7 +32,7 @@ public sealed class ListServicesQueryHandler(IServiceRepository serviceRepositor
     }
 }
 
-public sealed record GetServiceAvailableHoursQuery(Guid ServiceId, DateTime Start, DateTime End) 
+public sealed record GetServiceAvailableHoursQuery(Guid ServiceId, DateTime Start, DateTime End)
     : IQueryRequest<Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>>;
 
 public sealed class GetServiceAvailableHoursQueryHandler(
@@ -48,7 +42,7 @@ public sealed class GetServiceAvailableHoursQueryHandler(
     : IRequestHandler<GetServiceAvailableHoursQuery, Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>>
 {
     public async Task<Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>> HandleAsync(
-        GetServiceAvailableHoursQuery query, 
+        GetServiceAvailableHoursQuery query,
         CancellationToken cancellationToken = default)
     {
         var service = await serviceRepository.GetByIdAsync(query.ServiceId, cancellationToken)

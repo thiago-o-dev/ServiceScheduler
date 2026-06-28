@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace ServiceScheduler.Application.Features.Dashboard;
 
 public record TopServiceDto(string ServiceName, int Count, decimal Revenue);

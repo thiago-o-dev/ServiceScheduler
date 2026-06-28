@@ -1,17 +1,12 @@
 using ServiceScheduler.Application.Abstractions;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Workers;
 
 public sealed record GetWorkerByIdQuery(Guid Id) : IQueryRequest<WorkerDto>;
 
-public sealed class GetWorkerByIdQueryHandler(IWorkerRepository workerRepository) 
+public sealed class GetWorkerByIdQueryHandler(IWorkerRepository workerRepository)
     : IRequestHandler<GetWorkerByIdQuery, WorkerDto>
 {
     public async Task<WorkerDto> HandleAsync(GetWorkerByIdQuery query, CancellationToken cancellationToken = default)
@@ -38,7 +33,7 @@ public sealed class GetWorkerByIdQueryHandler(IWorkerRepository workerRepository
 
 public sealed record ListWorkersQuery : IQueryRequest<IReadOnlyList<WorkerDto>>;
 
-public sealed class ListWorkersQueryHandler(IWorkerRepository workerRepository) 
+public sealed class ListWorkersQueryHandler(IWorkerRepository workerRepository)
     : IRequestHandler<ListWorkersQuery, IReadOnlyList<WorkerDto>>
 {
     public async Task<IReadOnlyList<WorkerDto>> HandleAsync(ListWorkersQuery query, CancellationToken cancellationToken = default)
@@ -61,7 +56,7 @@ public sealed record GetWorkerAvailablePeriodsQuery(Guid WorkerId, DateTime Star
 
 public sealed class GetWorkerAvailablePeriodsQueryHandler(
     IWorkerRepository workerRepository,
-    IScheduleRepository scheduleRepository) 
+    IScheduleRepository scheduleRepository)
     : IRequestHandler<GetWorkerAvailablePeriodsQuery, IReadOnlyList<DateTimeIntervalDto>>
 {
     public async Task<IReadOnlyList<DateTimeIntervalDto>> HandleAsync(GetWorkerAvailablePeriodsQuery query, CancellationToken cancellationToken = default)

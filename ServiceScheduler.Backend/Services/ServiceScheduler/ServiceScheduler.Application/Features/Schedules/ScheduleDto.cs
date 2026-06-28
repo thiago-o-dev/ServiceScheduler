@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace ServiceScheduler.Application.Features.Schedules;
 
 public record WeeklySuggestionDto(bool HasSuggestion, DateTime? SuggestedDate, string? Message);

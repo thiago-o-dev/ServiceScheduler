@@ -1,7 +1,7 @@
-using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
-using ServiceScheduler.Infrastructure.Persistence;
 using ServiceScheduler.Infrastructure.Configuration;
+using ServiceScheduler.Infrastructure.Persistence;
+using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 

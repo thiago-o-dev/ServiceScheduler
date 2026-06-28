@@ -1,10 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ServiceScheduler.Application.Abstractions;
 using ServiceScheduler.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Infrastructure.Persistence.Repositories;
 

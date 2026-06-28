@@ -1,17 +1,12 @@
 using ServiceScheduler.Application.Abstractions;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Customers;
 
 public sealed record GetCustomerByIdQuery(Guid Id) : IQueryRequest<CustomerDto>;
 
-public sealed class GetCustomerByIdQueryHandler(ICustomerRepository customerRepository) 
+public sealed class GetCustomerByIdQueryHandler(ICustomerRepository customerRepository)
     : IRequestHandler<GetCustomerByIdQuery, CustomerDto>
 {
     public async Task<CustomerDto> HandleAsync(GetCustomerByIdQuery query, CancellationToken cancellationToken = default)
@@ -23,10 +18,10 @@ public sealed class GetCustomerByIdQueryHandler(ICustomerRepository customerRepo
     }
 }
 
-public sealed record ListCustomersQuery(string? SearchTerm, int Page = 1, int PageSize = 10) 
+public sealed record ListCustomersQuery(string? SearchTerm, int Page = 1, int PageSize = 10)
     : IQueryRequest<PagedResult<CustomerDto>>;
 
-public sealed class ListCustomersQueryHandler(ICustomerRepository customerRepository) 
+public sealed class ListCustomersQueryHandler(ICustomerRepository customerRepository)
     : IRequestHandler<ListCustomersQuery, PagedResult<CustomerDto>>
 {
     public async Task<PagedResult<CustomerDto>> HandleAsync(ListCustomersQuery query, CancellationToken cancellationToken = default)
@@ -38,9 +33,9 @@ public sealed class ListCustomersQueryHandler(ICustomerRepository customerReposi
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
             var search = query.SearchTerm.Trim();
-            queryable = queryable.Where(c => 
-                c.Name.Contains(search, StringComparison.OrdinalIgnoreCase) || 
-                c.Phone.Contains(search, StringComparison.OrdinalIgnoreCase) || 
+            queryable = queryable.Where(c =>
+                c.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                c.Phone.Contains(search, StringComparison.OrdinalIgnoreCase) ||
                 c.Email.Contains(search, StringComparison.OrdinalIgnoreCase));
         }
 

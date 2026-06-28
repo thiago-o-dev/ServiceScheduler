@@ -4,9 +4,6 @@ using ServiceScheduler.Application.Exceptions;
 using ServiceScheduler.Domain.Entities;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Application.Features.Customers;
 
@@ -30,7 +27,7 @@ public sealed class CreateCustomerCommandHandler(ICustomerRepository customerRep
 
 public sealed record UpdateCustomerCommand(Guid Id, string Name, string Phone) : ICommandRequest;
 
-public sealed class UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork) 
+public sealed class UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateCustomerCommand, Unit>
 {
     public async Task<Unit> HandleAsync(UpdateCustomerCommand command, CancellationToken cancellationToken = default)
@@ -48,9 +45,9 @@ public sealed class UpdateCustomerCommandHandler(ICustomerRepository customerRep
 public sealed record DeleteCustomerCommand(Guid Id) : ICommandRequest;
 
 public sealed class DeleteCustomerCommandHandler(
-    ICustomerRepository customerRepository, 
+    ICustomerRepository customerRepository,
     IScheduleRepository scheduleRepository,
-    IUnitOfWork unitOfWork) 
+    IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteCustomerCommand, Unit>
 {
     public async Task<Unit> HandleAsync(DeleteCustomerCommand command, CancellationToken cancellationToken = default)

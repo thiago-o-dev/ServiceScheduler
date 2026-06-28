@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace ServiceScheduler.Application.Features.Customers;
 
 public record CustomerDto(Guid Id, string Name, string Phone, string Email);

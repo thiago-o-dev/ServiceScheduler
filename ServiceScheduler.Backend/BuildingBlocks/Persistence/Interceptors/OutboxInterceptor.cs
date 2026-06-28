@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using BuildingBlocks.Persistence.EntityFramework;
+﻿using BuildingBlocks.Persistence.EntityFramework;
 using BuildingBlocks.Persistence.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using SharedKernel.Abstractions;
+using System.Text.Json;
 
 namespace BuildingBlocks.Persistence.Interceptors;
 

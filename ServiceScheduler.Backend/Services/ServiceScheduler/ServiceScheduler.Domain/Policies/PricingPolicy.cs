@@ -35,8 +35,8 @@ public static class PricingPolicy
             while (true)
             {
                 // Verifica se todos os serviços exigidos por este pacote estão presentes e não foram consumidos ainda
-                var canApply = bundleServiceIds.All(id => 
-                    serviceIds.Contains(id) && 
+                var canApply = bundleServiceIds.All(id =>
+                    serviceIds.Contains(id) &&
                     !matchedServiceIds.Contains(id));
 
                 if (!canApply)
