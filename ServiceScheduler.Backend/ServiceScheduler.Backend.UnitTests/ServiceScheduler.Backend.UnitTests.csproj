@@ -18,4 +18,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Services\ServiceScheduler\ServiceScheduler.Domain\ServiceScheduler.Domain.csproj" />
+    <ProjectReference Include="..\Services\ServiceScheduler\ServiceScheduler.Application\ServiceScheduler.Application.csproj" />
+  </ItemGroup>
+
 </Project>
