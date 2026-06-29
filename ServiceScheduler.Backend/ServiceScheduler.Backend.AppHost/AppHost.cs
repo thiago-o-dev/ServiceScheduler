@@ -35,8 +35,8 @@ var scheduler = builder.AddProject<Projects.ServiceScheduler_Api>("serviceschedu
     .WithReference(schedulerDb)
     .WithReference(keycloak)
     .WaitFor(rabbitmq)
-    .WaitFor(schedulerDb)
-    .WaitFor(keycloak);
+    .WaitFor(schedulerDb);
+    //.WaitFor(keycloak);
 
 var gateway = builder.AddProject<Projects.Api_Gateway>("api-gateway")
     .WithReference(keycloak)
