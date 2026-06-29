@@ -14,7 +14,7 @@ public sealed class CreateCustomerCommandHandler(ICustomerRepository customerRep
     public async Task<Guid> HandleAsync(CreateCustomerCommand command, CancellationToken cancellationToken = default)
     {
         if (await customerRepository.ExistsByEmailAsync(command.Email, cancellationToken))
-            throw new DuplicateEntityException($"Um customere com o email '{command.Email}' já existe.");
+            throw new DuplicateEntityException($"Um customer com o email '{command.Email}' já existe.");
 
         var owner = Customer.Create(command.Name, command.Phone, command.Email);
 
