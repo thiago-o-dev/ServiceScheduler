@@ -46,6 +46,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SchedulerDbContext>();
     await db.Database.MigrateAsync();
+    await SchedulerDbContextSeeder.SeedAsync(db);
 }
 
 app.MapDefaultEndpoints();
