@@ -22,7 +22,7 @@ public static class DependencyInjection
 
         services.AddPersistence<SchedulerDbContext>(connectionString);
         services.AddMessaging(rabbitMqConnectionString);
-        //services.AddOutboxWorker<SchedulerDbContext>();
+        services.AddOutboxWorker<SchedulerDbContext>();
 
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IWorkerRepository, WorkerRepository>();
