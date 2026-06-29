@@ -1,5 +1,6 @@
 ﻿using Api.Gateway.Models;
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace Api.Gateway.Services;
 
@@ -12,12 +13,13 @@ public sealed class SchedulerService(
 
     public async Task<ServiceResult> RegisterAsync(
     RegisterRequest request,
+    string keycloakToken,
     CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = request.RegisterType switch
         {
             RegisterType.Customer =>
-                await _client.PostAsJsonAsync(
+                await PostAsJsonWithAuthAsync(
                     "/api/Customers",
                     new
                     {
@@ -25,10 +27,11 @@ public sealed class SchedulerService(
                         request.Phone,
                         request.Email
                     },
+                    keycloakToken,
                     cancellationToken),
 
             RegisterType.Worker =>
-                await _client.PostAsJsonAsync(
+                await PostAsJsonWithAuthAsync(
                     "/api/Workers",
                     new
                     {
@@ -37,6 +40,7 @@ public sealed class SchedulerService(
                         request.Email,
                         Cpf = request.Document
                     },
+                    keycloakToken,
                     cancellationToken),
 
             _ => throw new NotSupportedException()
@@ -51,5 +55,21 @@ public sealed class SchedulerService(
                 (int)response.StatusCode,
                 body,
                 response.Content.Headers.ContentType?.ToString() ?? "application/json");
+    }
+
+    private Task<HttpResponseMessage> PostAsJsonWithAuthAsync<T>(
+    string url,
+    T data,
+    string token,
+    CancellationToken ct)
+    {
+        Console.WriteLine(token);
+        var req = new HttpRequestMessage(HttpMethod.Post, url);
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        req.Content = JsonContent.Create(data);
+
+        Console.WriteLine(req.Headers.Authorization?.ToString());
+
+        return _client.SendAsync(req, ct);
     }
 }

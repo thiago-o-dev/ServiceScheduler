@@ -128,12 +128,55 @@ public static class Extensions
         return app;
     }
 
+    public static TBuilder AddKeycloakAuthentication<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        var keycloakBase =
+            builder.Configuration["services:keycloak:https:0"]?.TrimEnd('/')
+            ?? builder.Configuration["services:keycloak:http:0"]?.TrimEnd('/')
+            ?? builder.Configuration["Keycloak:BaseUrl"]!;
+
+        builder.Configuration["Keycloak:BaseUrl"] = keycloakBase;
+        var realm = builder.Configuration["Keycloak:Realm"]!;
+        var clientId = builder.Configuration["Keycloak:ClientId"]!;
+
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = $"{keycloakBase}/realms/{realm}";
+                options.MetadataAddress = $"{keycloakBase}/realms/{realm}/.well-known/openid-configuration";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters.ValidateAudience = false;
+                // DEBUG FIRST
+                options.TokenValidationParameters.ValidateIssuer = false;
+                options.BackchannelHttpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        Console.WriteLine(ctx.Exception);
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+        builder.Services.AddAuthorization();
+
+        return builder;
+    }
+
     public static TBuilder AddDefaultAuthentication<TBuilder>(
         this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
         var keycloakBase =
             builder.Configuration["services:keycloak:https:0"]?.TrimEnd('/')
+            ?? builder.Configuration["services:keycloak:http:0"]?.TrimEnd('/')
             ?? builder.Configuration["Keycloak:BaseUrl"]!;
 
         builder.Configuration["Keycloak:BaseUrl"] = keycloakBase;
@@ -162,11 +205,28 @@ public static class Extensions
                     ServerCertificateCustomValidationCallback =
                         HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                 };
+                //options.Events = new JwtBearerEvents
+                //{
+                //    OnAuthenticationFailed = ctx =>
+                //    {
+                //        Console.WriteLine(ctx.Exception);
+                //        return Task.CompletedTask;
+                //    }
+                //};
+
                 options.Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = ctx =>
                     {
-                        Console.WriteLine(ctx.Exception);
+                        Console.WriteLine("AUTH FAILED:");
+                        Console.WriteLine(ctx.Exception.ToString());
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = ctx =>
+                    {
+                        Console.WriteLine("CHALLENGE ERROR:");
+                        Console.WriteLine(ctx.Error);
+                        Console.WriteLine(ctx.ErrorDescription);
                         return Task.CompletedTask;
                     }
                 };

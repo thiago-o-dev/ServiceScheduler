@@ -20,8 +20,8 @@
   ],
   "roles": {
     "realm": [
-      { "name": "worker", "description": "Trabalhador que oferta serviços" },
-      { "name": "customer", "description": "Cliente que agenda serviços" }
+      { "name": "customer", "description": "Cliente que agenda serviços" },
+      { "name": "worker", "description": "Trabalhador que oferta serviços" }
     ],
     "client": {}
   }

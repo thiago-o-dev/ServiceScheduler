@@ -19,7 +19,7 @@ public sealed class AuthController(
     {
         var result = await authService.LoginAsync(request, ct);
 
-        return new ContentResult
+        return result.Value != null ? Ok(result.Value) : new ContentResult
         {
             StatusCode = result.StatusCode,
             Content = result.Content,
