@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.16.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\ServiceScheduler.Backend.ServiceDefaults\ServiceScheduler.Backend.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\ServiceScheduler.Application\ServiceScheduler.Application.csproj" />
     <ProjectReference Include="..\ServiceScheduler.Infrastructure\ServiceScheduler.Infrastructure.csproj" />
   </ItemGroup>

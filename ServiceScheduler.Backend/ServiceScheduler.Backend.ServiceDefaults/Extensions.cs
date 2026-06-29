@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using ServiceScheduler.Backend.ServiceDefaults.ProblemDetails;
 using SharedKernel.Abstractions.CQRS;
 using System.Reflection;
 
@@ -141,6 +142,23 @@ public static class Extensions
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
+
+        return builder;
+    }
+
+    public static TBuilder AddProblemDetailsHandling<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = ctx =>
+            {
+                ctx.ProblemDetails.Extensions.TryAdd("traceId",
+                    System.Diagnostics.Activity.Current?.Id ?? ctx.HttpContext.TraceIdentifier);
+            };
+        });
+
+        builder.Services.AddExceptionHandler<ExceptionHandler>();
 
         return builder;
     }

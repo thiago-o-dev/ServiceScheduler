@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using ServiceScheduler.Api.Requests.Customer;
 using ServiceScheduler.Application.Features.Customers;
 using SharedKernel.Abstractions.CQRS;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServiceScheduler.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class CustomersController(IRequestDispatcher dispatcher) : ControllerBase
 {
     [HttpPost]

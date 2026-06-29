@@ -8,6 +8,7 @@ using SharedKernel.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddProblemDetailsHandling();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
