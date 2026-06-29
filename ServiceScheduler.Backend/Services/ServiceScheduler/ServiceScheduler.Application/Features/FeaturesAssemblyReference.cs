@@ -1,3 +1,3 @@
 ﻿namespace ServiceScheduler.Application.Slices;
 
-public sealed class AssemblyReference;
+public sealed class FeaturesAssemblyReference;
