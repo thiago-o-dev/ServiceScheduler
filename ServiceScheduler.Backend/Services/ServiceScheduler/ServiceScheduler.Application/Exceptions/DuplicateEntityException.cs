@@ -2,4 +2,4 @@
 
 namespace ServiceScheduler.Application.Exceptions;
 
-public class DuplicateEntityException(string message) : BusinessLogicException(message);
+public class DuplicateEntityException(string message) : ConflictException(message);

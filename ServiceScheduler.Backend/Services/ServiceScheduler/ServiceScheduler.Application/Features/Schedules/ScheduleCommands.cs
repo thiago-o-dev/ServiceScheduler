@@ -46,14 +46,14 @@ public sealed class CreateScheduleCommandHandler(
             p.StartTime <= schedStart.TimeOfDay &&
             p.EndTime >= schedEnd.TimeOfDay);
         if (!isAvailable)
-            throw new DomainValidationException("O profissional não está disponível neste horário (fora do turno de atendimento).");
+            throw new ConflictException("O profissional não está disponível neste horário (fora do turno de atendimento).");
 
         // 2. Unavailable periods check
         var isUnavailable = worker.UnavailablePeriods.Any(up =>
             schedStart < up.End &&
             schedEnd > up.Start);
         if (isUnavailable)
-            throw new DomainValidationException("O profissional está indisponível neste período (bloqueio/folga/férias).");
+            throw new ConflictException("O profissional está indisponível neste período (bloqueio/folga/férias).");
 
         // 3. Collision check
         var otherSchedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
@@ -62,7 +62,7 @@ public sealed class CreateScheduleCommandHandler(
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
-            throw new DomainValidationException("O profissional já possui outro agendamento conflitante neste horário.");
+            throw new ConflictException("O profissional já possui outro agendamento conflitante neste horário.");
 
         // Create
         var schedule = Schedule.Create(customer.Id, worker.Id, services.ToList(), command.ScheduledAt, command.Duration);
@@ -136,9 +136,9 @@ public sealed class UpdateScheduleCommandHandler(
         // Rule of 2 days
         var minAllowedDate = DateTime.UtcNow.AddDays(2);
         if (schedule.ScheduledAt < minAllowedDate)
-            throw new DomainValidationException("Alterações em agendamentos com menos de 2 dias de antecedência devem ser feitas exclusivamente por telefone.");
+            throw new BusinessLogicException("Alterações em agendamentos com menos de 2 dias de antecedência devem ser feitas exclusivamente por telefone.");
         if (command.ScheduledAt < minAllowedDate)
-            throw new DomainValidationException("O novo horário do agendamento deve ser para pelo menos 2 dias no futuro.");
+            throw new BusinessLogicException("O novo horário do agendamento deve ser para pelo menos 2 dias no futuro.");
 
         var worker = await workerRepository.GetByIdAsync(command.WorkerId, cancellationToken)
             ?? throw new NotFoundException($"Prestador com ID '{command.WorkerId}' não encontrado.");
@@ -156,7 +156,7 @@ public sealed class UpdateScheduleCommandHandler(
             p.StartTime <= schedStart.TimeOfDay &&
             p.EndTime >= schedEnd.TimeOfDay);
         if (!isAvailable)
-            throw new DomainValidationException("O profissional não está disponível neste horário (fora do turno de atendimento).");
+            throw new ConflictException("O profissional não está disponível neste horário (fora do turno de atendimento).");
 
         var isUnavailable = worker.UnavailablePeriods.Any(up =>
             schedStart < up.End &&
@@ -171,7 +171,7 @@ public sealed class UpdateScheduleCommandHandler(
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
-            throw new DomainValidationException("O profissional já possui outro agendamento conflitante neste horário.");
+            throw new ConflictException("O profissional já possui outro agendamento conflitante neste horário.");
 
         // Update
         schedule.Update(schedule.CustomerId, worker.Id, command.ScheduledAt, command.Duration);
@@ -226,13 +226,13 @@ public sealed class AdminUpdateScheduleCommandHandler(
             p.StartTime <= schedStart.TimeOfDay &&
             p.EndTime >= schedEnd.TimeOfDay);
         if (!isAvailable)
-            throw new DomainValidationException("O profissional não está disponível neste horário (fora do turno de atendimento).");
+            throw new ConflictException("O profissional não está disponível neste horário (fora do turno de atendimento).");
 
         var isUnavailable = worker.UnavailablePeriods.Any(up =>
             schedStart < up.End &&
             schedEnd > up.Start);
         if (isUnavailable)
-            throw new DomainValidationException("O profissional está indisponível neste período (bloqueio/folga/férias).");
+            throw new ConflictException("O profissional está indisponível neste período (bloqueio/folga/férias).");
 
         var otherSchedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
         var hasCollision = otherSchedules.Any(s =>
@@ -241,7 +241,7 @@ public sealed class AdminUpdateScheduleCommandHandler(
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
-            throw new DomainValidationException("O profissional já possui outro agendamento conflitante neste horário.");
+            throw new ConflictException("O profissional já possui outro agendamento conflitante neste horário.");
 
         // Update
         schedule.Update(customer.Id, worker.Id, command.ScheduledAt, command.Duration);
