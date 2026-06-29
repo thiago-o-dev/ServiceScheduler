@@ -80,8 +80,14 @@ public sealed class AuthService(
                 ContentType: role.ContentType);
         }
 
+        var token = await keycloakService.LoginAsync(
+            request.Email,
+            request.Password,
+            cancellationToken);
+
         var scheduler = await schedulerService.RegisterAsync(
             request,
+            token.Value!.Token,
             cancellationToken);
 
         if (!scheduler.Success)
