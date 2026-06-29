@@ -11,7 +11,32 @@ builder.AddServiceDefaults();
 builder.AddProblemDetailsHandling();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+builder.Services.AddOpenApi("v1", options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Info.Title = "Scheduler API v1";
+
+        return Task.CompletedTask;
+    });
+});
+
+builder.Services.AddOpenApi("v1-gateway", options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Info.Title = "Scheduler API v1 (Gateway)";
+
+        document.Servers.Clear();
+        document.Servers.Add(new()
+        {
+            Url = "/servicescheduler-api"
+        });
+
+        return Task.CompletedTask;
+    });
+});
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -31,7 +56,7 @@ app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi("/openapi/{documentName}.json");
     app.MapScalarApiReference();
 }
 

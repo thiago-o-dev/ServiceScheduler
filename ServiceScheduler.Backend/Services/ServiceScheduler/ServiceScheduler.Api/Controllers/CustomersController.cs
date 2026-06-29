@@ -8,7 +8,7 @@ namespace ServiceScheduler.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class CustomersController(IRequestDispatcher dispatcher) : ControllerBase
 {
     [HttpPost]
