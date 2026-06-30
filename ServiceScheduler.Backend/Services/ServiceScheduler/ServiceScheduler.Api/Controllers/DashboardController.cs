@@ -11,9 +11,9 @@ namespace ServiceScheduler.Api.Controllers;
 public class DashboardController(IRequestDispatcher dispatcher) : ControllerBase
 {
     [HttpGet("weekly-performance")]
-    public async Task<IActionResult> GetWeeklyPerformance([FromQuery] DateTime date, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetWeeklyPerformance([FromQuery] DateTime weekStart, [FromQuery] Guid workerId, CancellationToken cancellationToken)
     {
-        var query = new GetWeeklyPerformanceQuery(date);
+        var query = new GetWeeklyPerformanceQuery(weekStart);
         var result = await dispatcher.SendAsync(query, cancellationToken);
         return Ok(result);
     }
