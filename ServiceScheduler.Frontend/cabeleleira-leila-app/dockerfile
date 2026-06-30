@@ -1,0 +1,14 @@
+FROM node:20.19.6-alpine
+
+WORKDIR /app
+
+# Install deps first so this layer is cached when only source changes
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+# --host 0.0.0.0 is required so Vite is reachable from outside the container
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]

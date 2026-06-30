@@ -44,4 +44,13 @@ var gateway = builder.AddProject<Projects.Api_Gateway>("api-gateway")
     .WaitFor(keycloak)
     .WaitFor(scheduler);
 
+var frontendPath = "../../ServiceScheduler.Frontend/cabeleleira-leila-app";
+
+var frontend = builder.AddDockerfile("cabeleleira-leila-app", frontendPath)
+    .WithHttpEndpoint(port: 5173, targetPort: 5173, name: "http")
+    .WithEnvironment("CHOKIDAR_USEPOLLING", "true")
+    .WithBindMount(frontendPath, "/app")
+    .WithVolume("cabeleleira-leila-app-node-modules", "/app/node_modules");
+    // não precisa de wait for pq react demora 2 mil anos
+
 builder.Build().Run();
