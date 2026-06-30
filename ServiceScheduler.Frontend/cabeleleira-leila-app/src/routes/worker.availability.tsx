@@ -10,13 +10,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { workersApi } from "@/lib/api/workers.api";
 import { useAuth } from "@/lib/auth/auth-context";
-import { DayOfWeek } from "@/lib/api/types";
+import { AvailablePeriod, DayOfWeek } from "@/lib/api/types";
 import { dayName } from "@/lib/format";
+import { error } from "console";
 
 export const Route = createFileRoute("/worker/availability")({
   head: () => ({ meta: [{ title: "Disponibilidade — Cabeleleira Leila" }] }),
@@ -49,7 +54,7 @@ function WeeklyEditor({ workerId }: { workerId: string }) {
   const queryClient = useQueryClient();
   const q = useSuspenseQuery({
     queryKey: ["available-periods", workerId],
-    queryFn: () => workersApi.listAvailable(workerId),
+    queryFn: () => workersApi.listAllAvailable(workerId),
   });
   const [dow, setDow] = useState(String(DayOfWeek.Monday));
   const [start, setStart] = useState("09:00");
@@ -62,12 +67,23 @@ function WeeklyEditor({ workerId }: { workerId: string }) {
       toast.success("Período adicionado.");
       queryClient.invalidateQueries({ queryKey: ["available-periods", workerId] });
     },
+    onError: (error) => {
+      toast.error((error as Error).message || "Não foi possível adicionar.");
+    },
   });
   const remove = useMutation({
-    mutationFn: (id: string) => workersApi.removeAvailable(workerId, { id }),
+    mutationFn: (p: AvailablePeriod) =>
+      workersApi.removeAvailable(workerId, {
+        dayOfWeek: p.dayOfWeek,
+        startTime: p.startTime,
+        endTime: p.endTime,
+      }),
     onSuccess: () => {
       toast.success("Período removido.");
       queryClient.invalidateQueries({ queryKey: ["available-periods", workerId] });
+    },
+    onError: (error) => {
+      toast.error((error as Error).message || "Não foi possível remover.");
     },
   });
 
@@ -79,10 +95,14 @@ function WeeklyEditor({ workerId }: { workerId: string }) {
           <div className="space-y-2">
             <Label>Dia da semana</Label>
             <Select value={dow} onValueChange={setDow}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: 7 }).map((_, i) => (
-                  <SelectItem key={i} value={String(i)}>{dayName(i)}</SelectItem>
+                  <SelectItem key={i} value={String(i)}>
+                    {dayName(i)}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -115,9 +135,12 @@ function WeeklyEditor({ workerId }: { workerId: string }) {
                     <span className="text-sm text-muted-foreground">Folga</span>
                   ) : (
                     periods.map((p) => (
-                      <span key={p.id} className="flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-sm">
+                      <span
+                        key={p.id}
+                        className="flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-sm"
+                      >
                         {p.startTime} – {p.endTime}
-                        <button onClick={() => remove.mutate(p.id)} aria-label="Remover">
+                        <button onClick={() => remove.mutate(p)} aria-label="Remover">
                           <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
                         </button>
                       </span>
@@ -142,13 +165,19 @@ function UnavailableEditor({ workerId }: { workerId: string }) {
 
   const add = useMutation({
     mutationFn: () => {
-      const body = { start: new Date(start).toISOString(), end: new Date(end).toISOString(), reason };
+      const body = {
+        start: new Date(start).toISOString(),
+        end: new Date(end).toISOString(),
+        reason,
+      };
       return preempt
         ? workersApi.preemptUnavailable(workerId, body)
         : workersApi.addUnavailable(workerId, body);
     },
     onSuccess: () => {
-      toast.success(preempt ? "Ausência registrada e horários cancelados." : "Ausência registrada.");
+      toast.success(
+        preempt ? "Ausência registrada e horários cancelados." : "Ausência registrada.",
+      );
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
     },
   });
@@ -164,7 +193,11 @@ function UnavailableEditor({ workerId }: { workerId: string }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>Início</Label>
-              <Input type="datetime-local" value={start} onChange={(e) => setStart(e.target.value)} />
+              <Input
+                type="datetime-local"
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Fim</Label>
@@ -173,10 +206,18 @@ function UnavailableEditor({ workerId }: { workerId: string }) {
           </div>
           <div className="space-y-2">
             <Label>Motivo</Label>
-            <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Ex: férias, atestado..." />
+            <Input
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Ex: férias, atestado..."
+            />
           </div>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={preempt} onChange={(e) => setPreempt(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={preempt}
+              onChange={(e) => setPreempt(e.target.checked)}
+            />
             Cancelar agendamentos em conflito (forçar)
           </label>
           <Button onClick={() => add.mutate()} disabled={add.isPending}>

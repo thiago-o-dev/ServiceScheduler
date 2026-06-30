@@ -21,6 +21,7 @@ export const workersApi = {
     api<Worker>(`api/Workers/${id}`, { method: "PUT", body: req }),
 
   listAvailable: (id: UUID) => api<AvailablePeriod[]>(`api/Workers/${id}/available-periods`),
+  listAllAvailable: (id: UUID) => api<AvailablePeriod[]>(`api/Workers/${id}/all-available-periods`),
   addAvailable: (id: UUID, req: AddAvailablePeriodRequest) =>
     api<AvailablePeriod>(`api/Workers/${id}/available-periods`, { method: "POST", body: req }),
   removeAvailable: (id: UUID, req: RemoveAvailablePeriodRequest) =>

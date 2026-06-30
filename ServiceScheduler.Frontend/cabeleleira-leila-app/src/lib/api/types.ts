@@ -82,13 +82,14 @@ export interface ServiceBundle {
   name: string;
   description: string;
   serviceIds: UUID[];
+  value: number;
   discount: number;
 }
 export interface CreateServiceBundleCommand {
   name: string;
   description: string;
   serviceIds: UUID[];
-  discount: number;
+  value: number;
 }
 export type UpdateServiceBundleRequest = CreateServiceBundleCommand;
 
@@ -124,7 +125,9 @@ export interface AddAvailablePeriodRequest {
   endTime: string;
 }
 export interface RemoveAvailablePeriodRequest {
-  id: UUID;
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
 }
 
 export interface UnavailablePeriod {
@@ -152,7 +155,7 @@ export type ServiceLineStatus = "Pending" | "InProgress" | "Done" | "Cancelled";
 
 export interface ScheduleService {
   serviceId: UUID;
-  serviceName: string;
+  name: string;
   value: number;
   status: ServiceLineStatus;
 }
@@ -166,7 +169,7 @@ export interface Schedule {
   scheduledAt: ISODate;
   duration: TimeSpan;
   status: ScheduleStatus;
-  grossValue: number;
+  bruteValue: number;
   netValue: number;
 }
 
@@ -198,6 +201,12 @@ export interface AvailableHoursResponse {
   date: string; // YYYY-MM-DD
   slots: { start: ISODate; end: ISODate; workerId: UUID }[];
 }
+
+export interface TimeInterval {
+  start: string;
+  end: string;
+}
+export type WorkerAvailabilityMap = Record<UUID, TimeInterval[]>;
 
 export interface WeeklyPerformance {
   weekStart: ISODate;

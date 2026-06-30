@@ -81,7 +81,7 @@ function WorkerAgenda() {
                           <Badge variant={statusVariant(s.status)}>{statusLabel(s.status)}</Badge>
                         </div>
                         <div className="mt-1 text-sm text-muted-foreground">
-                          {s.services.map((x) => x.serviceName).join(", ")} · {brl(s.netValue)}
+                          {s.services.map((x) => x.name).join(", ")} · {brl(s.netValue)}
                         </div>
                       </div>
                       <div className="flex gap-2">

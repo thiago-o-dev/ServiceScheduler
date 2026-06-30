@@ -30,11 +30,18 @@ function Appointments() {
       toast.success("Reserva cancelada.");
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
     },
+    onError: (error) => {
+      toast.error((error as Error).message || "Não foi possível cancelar.");
+    },
   });
 
   const now = Date.now();
-  const upcoming = data.filter((s) => new Date(s.scheduledAt).getTime() >= now && s.status !== "Cancelled");
-  const past = data.filter((s) => new Date(s.scheduledAt).getTime() < now || s.status === "Cancelled");
+  const upcoming = data.filter(
+    (s) => new Date(s.scheduledAt).getTime() >= now && s.status !== "Cancelled",
+  );
+  const past = data.filter(
+    (s) => new Date(s.scheduledAt).getTime() < now || s.status === "Cancelled",
+  );
 
   return (
     <div className="space-y-8">
@@ -56,16 +63,27 @@ function Appointments() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-display text-lg">
-                        {format(new Date(s.scheduledAt), "EEEE, dd 'de' MMM 'às' HH:mm", { locale: ptBR })}
+                        {format(new Date(s.scheduledAt), "EEEE, dd 'de' MMM 'às' HH:mm", {
+                          locale: ptBR,
+                        })}
                       </span>
                       <Badge variant={statusVariant(s.status)}>{statusLabel(s.status)}</Badge>
                     </div>
                     <div className="mt-1 text-sm text-muted-foreground">
-                      Com {s.workerName} · {s.services.map((x) => x.serviceName).join(", ")}
+                      Com {s.workerName} · {s.services.map((x) => x.name).join(", ")}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="font-display text-lg text-primary">{brl(s.netValue)}</div>
+                    {s.bruteValue !== s.netValue ? (
+                      <div className="flex flex-col items-end leading-tight">
+                        <span className="text-sm text-muted-foreground line-through">
+                          {brl(s.bruteValue)}
+                        </span>
+                        <span className="font-display text-lg text-primary">{brl(s.netValue)}</span>
+                      </div>
+                    ) : (
+                      <div className="font-display text-lg text-primary">{brl(s.netValue)}</div>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -90,7 +108,9 @@ function Appointments() {
               <Card key={s.id} className="opacity-80">
                 <CardContent className="flex items-center justify-between p-5 text-sm">
                   <div>
-                    <div className="font-medium">{format(new Date(s.scheduledAt), "dd/MM/yyyy 'às' HH:mm")}</div>
+                    <div className="font-medium">
+                      {format(new Date(s.scheduledAt), "dd/MM/yyyy 'às' HH:mm")}
+                    </div>
                     <div className="text-muted-foreground">Com {s.workerName}</div>
                   </div>
                   <Badge variant={statusVariant(s.status)}>{statusLabel(s.status)}</Badge>

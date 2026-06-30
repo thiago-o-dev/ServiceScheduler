@@ -32,7 +32,7 @@ type Target = "gateway" | "core";
 interface RequestOpts {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
-  query?: Record<string, string | number | undefined | null>;
+  query?: Record<string, string | number | string[] | undefined | null>;
   target?: Target;
   signal?: AbortSignal;
 }
@@ -48,10 +48,15 @@ export async function api<T = unknown>(path: string, opts: RequestOpts = {}): Pr
   const base = target === "gateway" ? GATEWAY_URL : CORE_URL;
   const url = new URL(path, base.endsWith("/") ? base : base + "/");
   if (query) {
-    for (const [k, v] of Object.entries(query)) {
-      if (v != null) url.searchParams.set(k, String(v));
+  for (const [k, v] of Object.entries(query)) {
+    if (v == null) continue;
+    if (Array.isArray(v)) {
+      for (const item of v) url.searchParams.append(k, String(item));
+    } else {
+      url.searchParams.set(k, String(v));
     }
   }
+}
   const res = await fetch(url.toString().replace(/\/$/, ""), {
     method,
     signal,
@@ -68,7 +73,7 @@ export async function api<T = unknown>(path: string, opts: RequestOpts = {}): Pr
     } catch {
       /* ignore */
     }
-    
+
     let message = `${method} ${path} → ${res.status}`;
 
     if (typeof payload === "object" && payload !== null) {

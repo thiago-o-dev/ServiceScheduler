@@ -55,10 +55,6 @@ function ProfilePage() {
             <Label>E-mail</Label>
             <Input value={q.data?.email ?? ""} disabled />
           </div>
-          <div className="space-y-2">
-            <Label>CPF</Label>
-            <Input value={q.data?.cpf ?? ""} disabled />
-          </div>
           <Button onClick={() => update.mutate()} disabled={update.isPending}>
             {update.isPending ? "Salvando..." : "Salvar alterações"}
           </Button>

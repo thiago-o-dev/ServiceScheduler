@@ -122,10 +122,10 @@ function RegisterPage() {
                   }
                   className="grid grid-cols-2 gap-2"
                 >
-                  <Label className="flex cursor-pointer items-center gap-2 rounded-md border p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary">
+                  <Label className="flex cursor-pointer items-center gap-2 rounded-md border p-3 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-secondary">
                     <RadioGroupItem value={String(RegisterType.Client)} /> Cliente
                   </Label>
-                  <Label className="flex cursor-pointer items-center gap-2 rounded-md border p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary">
+                  <Label className="flex cursor-pointer items-center gap-2 rounded-md border p-3 has-data-[state=checked]:border-primary has-data-[state=checked]:bg-secondary">
                     <RadioGroupItem value={String(RegisterType.Worker)} /> Profissional
                   </Label>
                 </RadioGroup>
