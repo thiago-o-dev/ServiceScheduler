@@ -94,4 +94,14 @@ public class WorkersController(IRequestDispatcher dispatcher) : ControllerBase
         var result = await dispatcher.SendAsync(query, cancellationToken);
         return Ok(result);
     }
+
+    [HttpGet("{id:guid}/all-available-periods")]
+    public async Task<IActionResult> GetAllAvailablePeriods(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAllWorkerAvailablePeriodsQuery(id);
+        var result = await dispatcher.SendAsync(query, cancellationToken);
+        return Ok(result);
+    }
 }

@@ -65,7 +65,7 @@ public sealed class AddAvailablePeriodCommandHandler(IWorkerRepository workerRep
     }
 }
 
-public sealed record RemoveAvailablePeriodCommand(Guid WorkerId, DayOfWeek DayOfWeek, string StartTime, string EndTime) : ICommandRequest;
+public sealed record RemoveAvailablePeriodCommand(Guid WorkerId, DayOfWeek DayOfWeek, TimeSpan StartTime, TimeSpan EndTime) : ICommandRequest;
 
 public sealed class RemoveAvailablePeriodCommandHandler(IWorkerRepository workerRepository, IUnitOfWork unitOfWork)
     : IRequestHandler<RemoveAvailablePeriodCommand, Unit>
@@ -75,9 +75,9 @@ public sealed class RemoveAvailablePeriodCommandHandler(IWorkerRepository worker
         var worker = await workerRepository.GetByIdAsync(command.WorkerId, cancellationToken)
             ?? throw new NotFoundException($"Prestador com ID '{command.WorkerId}' não encontrado.");
 
-        var start = TimeSpan.Parse(command.StartTime);
-        var end = TimeSpan.Parse(command.EndTime);
-        var period = new AvailablePeriod(command.DayOfWeek, start, end);
+        //var start = TimeSpan.Parse(command.StartTime);
+        //var end = TimeSpan.Parse(command.EndTime);
+        var period = new AvailablePeriod(command.DayOfWeek, command.StartTime, command.EndTime);
 
         worker.RemoveAvailablePeriod(period);
         await unitOfWork.SaveChangesAsync(cancellationToken);
