@@ -4,6 +4,7 @@
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
   "registrationAllowed": false,
+
   "clients": [
     {
       "clientId": "service-scheduler-app",
@@ -18,11 +19,92 @@
       "webOrigins": [ "*" ]
     }
   ],
+
   "roles": {
     "realm": [
-      { "name": "customer", "description": "Cliente que agenda serviços" },
-      { "name": "worker", "description": "Trabalhador que oferta serviços" }
-    ],
-    "client": {}
-  }
+      {
+        "name": "customer",
+        "description": "Cliente que agenda serviços"
+      },
+      {
+        "name": "worker",
+        "description": "Trabalhador que oferta serviços"
+      }
+    ]
+  },
+
+  "users": [
+    {
+      "username": "leila",
+      "enabled": true,
+      "email": "leila@cabeleleiraleila.com",
+      "emailVerified": true,
+      "firstName": "Leila",
+      "lastName": "Martins",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "worker"
+      ]
+    },
+    {
+      "username": "bruna",
+      "enabled": true,
+      "email": "bruna@cabeleleiraleila.com",
+      "emailVerified": true,
+      "firstName": "Bruna",
+      "lastName": "Costa",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "worker"
+      ]
+    },
+    {
+      "username": "camila",
+      "enabled": true,
+      "email": "camila@cabeleleiraleila.com",
+      "emailVerified": true,
+      "firstName": "Camila",
+      "lastName": "Souza",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "worker"
+      ]
+    },
+    {
+      "username": "cliente",
+      "enabled": true,
+      "email": "cliente@demo.com",
+      "emailVerified": true,
+      "firstName": "Cliente",
+      "lastName": "Demonstração",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "customer"
+      ]
+    }
+  ]
 }
