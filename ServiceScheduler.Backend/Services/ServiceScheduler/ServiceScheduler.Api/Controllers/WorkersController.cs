@@ -67,6 +67,7 @@ public class WorkersController(IRequestDispatcher dispatcher) : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> List(CancellationToken cancellationToken)
     {
         var query = new ListWorkersQuery();

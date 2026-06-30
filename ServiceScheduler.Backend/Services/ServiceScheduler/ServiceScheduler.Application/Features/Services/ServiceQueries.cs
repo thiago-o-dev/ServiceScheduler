@@ -32,7 +32,7 @@ public sealed class ListServicesQueryHandler(IServiceRepository serviceRepositor
     }
 }
 
-public sealed record GetServiceAvailableHoursQuery(Guid ServiceId, DateTime Start, DateTime End)
+public sealed record GetServiceAvailableHoursQuery(Guid ServiceId, DateTime Start, DateTime End, Guid? WorkerId = null)
     : IQueryRequest<Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>>;
 
 public sealed class GetServiceAvailableHoursQueryHandler(
@@ -48,7 +48,7 @@ public sealed class GetServiceAvailableHoursQueryHandler(
         var service = await serviceRepository.GetByIdAsync(query.ServiceId, cancellationToken)
             ?? throw new NotFoundException($"Serviço com ID '{query.ServiceId}' não encontrado.");
 
-        var workers = await workerRepository.GetAllAsync(cancellationToken);
+        var workers = query.WorkerId.HasValue ? [await workerRepository.GetByIdAsync((Guid)query.WorkerId, cancellationToken)] : await workerRepository.GetAllAsync(cancellationToken);
 
         var result = new Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>();
 

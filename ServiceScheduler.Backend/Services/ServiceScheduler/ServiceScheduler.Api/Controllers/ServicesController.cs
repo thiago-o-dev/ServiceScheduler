@@ -27,6 +27,7 @@ public class ServicesController(IRequestDispatcher dispatcher) : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> List(CancellationToken cancellationToken)
     {
         var query = new ListServicesQuery();
@@ -42,8 +43,8 @@ public class ServicesController(IRequestDispatcher dispatcher) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id:guid}/available-hours")]
-    public async Task<IActionResult> GetAvailableHours(
+    [HttpGet("{id:guid}/available-hours-multiple")]
+    public async Task<IActionResult> GetAvailableHoursMultiple(
         Guid id,
         [FromQuery] DateTime start,
         [FromQuery] DateTime end,
@@ -52,5 +53,17 @@ public class ServicesController(IRequestDispatcher dispatcher) : ControllerBase
         var query = new GetServiceAvailableHoursQuery(id, start, end);
         var result = await dispatcher.SendAsync(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("{id:guid}/available-hours")]
+    public async Task<IActionResult> GetAvailableHours(
+        Guid id,
+        [FromQuery] DateTime date,
+        [FromQuery] Guid workerId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetServiceAvailableHoursQuery(id, date.Date, date.Date.AddHours(24), workerId);
+        var result = await dispatcher.SendAsync(query, cancellationToken);
+        return Ok(result.First().Value);
     }
 }
