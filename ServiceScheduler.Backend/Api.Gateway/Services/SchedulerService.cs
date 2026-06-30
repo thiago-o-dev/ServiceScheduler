@@ -38,7 +38,7 @@ public sealed class SchedulerService(
                         request.Name,
                         request.Phone,
                         request.Email,
-                        Cpf = request.Document
+                        Cpf = request.Cpf
                     },
                     keycloakToken,
                     cancellationToken),

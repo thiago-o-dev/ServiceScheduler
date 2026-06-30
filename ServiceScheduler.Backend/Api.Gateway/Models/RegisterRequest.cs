@@ -5,7 +5,7 @@ public sealed record RegisterRequest(
     string Email,
     string Password,
     string Phone,
-    string Document,
+    string Cpf,
     //CustomerUniqueData CustomerUniqueData,
     //WorkerUniqueData WorkerUniqueData,
     RegisterType RegisterType);
