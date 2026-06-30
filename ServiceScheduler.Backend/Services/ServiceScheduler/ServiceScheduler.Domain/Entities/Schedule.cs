@@ -131,7 +131,7 @@ public class Schedule : LifeCycleEntity
 
     public void Confirm()
     {
-        if (Status == ScheduleStatus.Canceled)
+        if (Status == ScheduleStatus.Cancelled)
             throw new DomainValidationException("Não é possível confirmar um agendamento cancelado.");
 
         Status = ScheduleStatus.Confirmed;
@@ -147,10 +147,23 @@ public class Schedule : LifeCycleEntity
 
     public void Cancel()
     {
-        Status = ScheduleStatus.Canceled;
+        if (Status == ScheduleStatus.Confirmed && (ScheduledAt - DateTime.UtcNow) < TimeSpan.FromDays(2))
+            throw new DomainValidationException("Devido a configuração do sistema, é necessário cancelar por telefone agendamentos confirmados que ocorrerão em menos de dois dias.");
+
+
+        Status = ScheduleStatus.Cancelled;
         foreach (var service in Services)
         {
-            service.UpdateStatus(ServiceStatus.Canceled);
+            service.UpdateStatus(ServiceStatus.Cancelled);
+        }
+        Touch();
+    }
+    public void ForceCancel()
+    {
+        Status = ScheduleStatus.Cancelled;
+        foreach (var service in Services)
+        {
+            service.UpdateStatus(ServiceStatus.Cancelled);
         }
         Touch();
     }

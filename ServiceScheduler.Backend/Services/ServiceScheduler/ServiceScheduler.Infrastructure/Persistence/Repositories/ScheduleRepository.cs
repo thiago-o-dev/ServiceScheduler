@@ -65,7 +65,7 @@ public class ScheduleRepository : IScheduleRepository
 
         return await _context.Schedules
             .Include(s => s.Services)
-            .Where(s => s.CustomerId == customerId && s.ScheduledAt >= startOfWeek && s.ScheduledAt <= endOfWeek && s.Status != ScheduleStatus.Canceled)
+            .Where(s => s.CustomerId == customerId && s.ScheduledAt >= startOfWeek && s.ScheduledAt <= endOfWeek && s.Status != ScheduleStatus.Cancelled)
             .ToListAsync(cancellationToken);
     }
 

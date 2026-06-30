@@ -9,7 +9,6 @@ public class ServiceBundle : LifeCycleEntity
     public string Description { get; private set; } = string.Empty;
     public ICollection<Guid> ServiceIds { get; private set; } = new List<Guid>();
     public decimal Value { get; private set; }
-
     private ServiceBundle() { }
 
     public static ServiceBundle Create(string name, string description, ICollection<Guid> serviceIds, decimal value)

@@ -6,5 +6,5 @@ public enum ServiceStatus
     Confirmed = 1,
     Executing = 2,
     Concluded = 3,
-    Canceled = 4
+    Cancelled = 4
 }

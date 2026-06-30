@@ -172,7 +172,7 @@ public class Worker : LifeCycleEntity
         // Add active schedules that overlap with [start, end]
         foreach (var schedule in workerSchedules)
         {
-            if (schedule.Status != ScheduleStatus.Canceled)
+            if (schedule.Status != ScheduleStatus.Cancelled)
             {
                 var schedStart = schedule.ScheduledAt;
                 var schedEnd = schedule.ScheduledAt + schedule.Duration;

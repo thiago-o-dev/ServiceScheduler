@@ -36,14 +36,14 @@ public sealed class GetWeeklyPerformanceQueryHandler(
         var workerLookup = workers.ToDictionary(x => x.Id);
 
         var activeSchedules = schedules
-            .Where(s => s.Status != ScheduleStatus.Canceled)
+            .Where(s => s.Status != ScheduleStatus.Cancelled)
             .ToList();
 
         decimal totalRevenue = 0m;
 
         int completed = 0;
         int confirmed = schedules.Count(x => x.Status == ScheduleStatus.Confirmed);
-        int cancelled = schedules.Count(x => x.Status == ScheduleStatus.Canceled);
+        int cancelled = schedules.Count(x => x.Status == ScheduleStatus.Cancelled);
 
         var serviceStats = new Dictionary<Guid, ServiceAggregate>();
         var workerStats = new Dictionary<Guid, WorkerAggregate>();

@@ -43,8 +43,8 @@ public sealed class CreateScheduleCommandHandler(
         // 1. Shift check
         var isAvailable = worker.AvailablePeriods.Any(p =>
             p.DayOfWeek == command.ScheduledAt.DayOfWeek &&
-            p.StartTime <= schedStart.TimeOfDay &&
-            p.EndTime >= schedEnd.TimeOfDay);
+            p.StartTime <= schedStart.ToLocalTime().TimeOfDay &&
+            p.EndTime >= schedEnd.ToLocalTime().TimeOfDay);
         if (!isAvailable)
             throw new ConflictException("O profissional não está disponível neste horário (fora do turno de atendimento).");
 
@@ -58,7 +58,7 @@ public sealed class CreateScheduleCommandHandler(
         // 3. Collision check
         var otherSchedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
         var hasCollision = otherSchedules.Any(s =>
-            s.Status != ScheduleStatus.Canceled &&
+            s.Status != ScheduleStatus.Cancelled &&
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
@@ -167,7 +167,7 @@ public sealed class UpdateScheduleCommandHandler(
         var otherSchedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
         var hasCollision = otherSchedules.Any(s =>
             s.Id != schedule.Id &&
-            s.Status != ScheduleStatus.Canceled &&
+            s.Status != ScheduleStatus.Cancelled &&
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
@@ -237,7 +237,7 @@ public sealed class AdminUpdateScheduleCommandHandler(
         var otherSchedules = await scheduleRepository.GetByWorkerIdAsync(worker.Id, cancellationToken);
         var hasCollision = otherSchedules.Any(s =>
             s.Id != schedule.Id &&
-            s.Status != ScheduleStatus.Canceled &&
+            s.Status != ScheduleStatus.Cancelled &&
             schedStart < (s.ScheduledAt + s.Duration) &&
             schedEnd > s.ScheduledAt);
         if (hasCollision)
