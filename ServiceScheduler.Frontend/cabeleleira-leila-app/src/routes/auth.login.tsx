@@ -83,6 +83,8 @@ function LoginPage() {
           <ul className="space-y-1">
             <li><span className="font-mono">cliente@demo.com</span> · cliente</li>
             <li><span className="font-mono">leila@cabeleleiraleila.com</span> · profissional</li>
+            <li><span className="font-mono">bruna@cabeleleiraleila.com</span> · profissional</li>
+            <li><span className="font-mono">camila@cabeleleiraleila.com</span> · profissional</li>
             <li><span className="font-mono">admin@cabeleleiraleila.com</span> · administradora</li>
             <li>Senha: <span className="font-mono">demo1234</span></li>
           </ul>
