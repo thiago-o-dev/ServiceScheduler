@@ -1,5 +1,6 @@
 using ServiceScheduler.Application.Abstractions;
 using ServiceScheduler.Application.Features.Workers;
+using ServiceScheduler.Domain.Entities;
 using SharedKernel.Abstractions.CQRS;
 using SharedKernel.Exceptions;
 
@@ -32,7 +33,7 @@ public sealed class ListServicesQueryHandler(IServiceRepository serviceRepositor
     }
 }
 
-public sealed record GetServiceAvailableHoursQuery(Guid ServiceId, DateTime Start, DateTime End, Guid? WorkerId = null)
+public sealed record GetServiceAvailableHoursQuery(IReadOnlyList<Guid> ServiceIds, DateTime Start, DateTime End, Guid WorkerId)
     : IQueryRequest<Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>>;
 
 public sealed class GetServiceAvailableHoursQueryHandler(
@@ -45,10 +46,28 @@ public sealed class GetServiceAvailableHoursQueryHandler(
         GetServiceAvailableHoursQuery query,
         CancellationToken cancellationToken = default)
     {
-        var service = await serviceRepository.GetByIdAsync(query.ServiceId, cancellationToken)
-            ?? throw new NotFoundException($"Serviço com ID '{query.ServiceId}' não encontrado.");
+        if (query.ServiceIds.Count == 0)
+            throw new NotFoundException("Informe ao menos um serviço.");
 
-        var workers = query.WorkerId.HasValue ? [await workerRepository.GetByIdAsync((Guid)query.WorkerId, cancellationToken)] : await workerRepository.GetAllAsync(cancellationToken);
+        foreach (var serviceId in query.ServiceIds)
+        {
+            _ = await serviceRepository.GetByIdAsync(serviceId, cancellationToken)
+                ?? throw new NotFoundException($"Serviço com ID '{serviceId}' não encontrado.");
+        }
+
+        List<Worker> workers = [];
+
+        if (query.WorkerId != Guid.Empty)
+        {
+            var worker = await workerRepository.GetByIdAsync(query.WorkerId, cancellationToken)
+                ?? throw new NotFoundException("Trabalhador não encontrado");
+
+            workers.Add(worker);
+        }
+        else
+        {
+            workers.AddRange(await workerRepository.GetAllAsync(cancellationToken));
+        }
 
         var result = new Dictionary<Guid, IReadOnlyList<DateTimeIntervalDto>>();
 

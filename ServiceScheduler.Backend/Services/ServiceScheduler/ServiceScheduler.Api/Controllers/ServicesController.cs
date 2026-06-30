@@ -43,26 +43,27 @@ public class ServicesController(IRequestDispatcher dispatcher) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id:guid}/available-hours-multiple")]
-    public async Task<IActionResult> GetAvailableHoursMultiple(
+    [HttpGet("{id:guid}/available-hours")]
+    public async Task<IActionResult> GetAvailableHoursForService(
         Guid id,
-        [FromQuery] DateTime start,
-        [FromQuery] DateTime end,
+        [FromQuery] DateTime date,
+        [FromQuery] Guid? workerId,
         CancellationToken cancellationToken)
     {
-        var query = new GetServiceAvailableHoursQuery(id, start, end);
+        var query = new GetServiceAvailableHoursQuery([id], date.Date, date.Date.AddHours(24), workerId ?? Guid.Empty);
         var result = await dispatcher.SendAsync(query, cancellationToken);
         return Ok(result);
     }
 
-    [HttpGet("{id:guid}/available-hours")]
+    [HttpGet("available-hours")]
     public async Task<IActionResult> GetAvailableHours(
-        Guid id,
-        [FromQuery] DateTime date,
-        [FromQuery] Guid workerId,
+        [FromQuery] Guid[] serviceIds,
+        [FromQuery] DateTime start,
+        [FromQuery] DateTime end,
+        [FromQuery] Guid? workerId,
         CancellationToken cancellationToken)
     {
-        var query = new GetServiceAvailableHoursQuery(id, date.Date, date.Date.AddHours(24), workerId);
+        var query = new GetServiceAvailableHoursQuery(serviceIds, start, end, workerId ?? Guid.Empty);
         var result = await dispatcher.SendAsync(query, cancellationToken);
         return Ok(result);
     }
