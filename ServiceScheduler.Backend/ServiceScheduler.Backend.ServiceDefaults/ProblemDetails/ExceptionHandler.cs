@@ -46,7 +46,9 @@ public sealed class ExceptionHandler(
             return false;
         }
 
-        logger.LogWarning(exception, "Handled exception: {Title}", title);
+        logger.LogInformation("Handled {ExceptionType}: {Message}",
+            exception.GetType().Name,
+            exception.Message);
 
         httpContext.Response.StatusCode = status;
 
