@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "../api/auth.api";
-import { getStoredToken, setStoredToken } from "../api/client";
+import { getStoredToken, setStoredToken, api } from "../api/client";
 import type { RegisterRequest, TokenRequest } from "../api/types";
 import { decodeJwt, type JwtClaims, type Role } from "./jwt";
 
@@ -19,12 +19,56 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<JwtClaims | null>(null);
 
   useEffect(() => {
     setToken(getStoredToken());
   }, []);
 
-  const user = useMemo(() => decodeJwt(token), [token]);
+  useEffect(() => {
+    if (!token) {
+      setUser(null);
+      return;
+    }
+
+    const baseClaims = decodeJwt(token);
+    if (!baseClaims) {
+      setUser(null);
+      return;
+    }
+
+    setUser(baseClaims);
+
+    if (!baseClaims.customerId && !baseClaims.workerId) {
+      const fetchProfileIds = async () => {
+        try {
+          if (baseClaims.role === "Client") {
+            const searchRes = await api<{ items: { id: string; email: string }[] }>("api/Customers", {
+              query: { searchTerm: baseClaims.email }
+            });
+            const matchingCustomer = searchRes?.items?.find(
+              (c) => c.email.toLowerCase() === baseClaims.email.toLowerCase()
+            );
+            if (matchingCustomer) {
+              setUser((prev) => prev && prev.sub === baseClaims.sub ? { ...prev, customerId: matchingCustomer.id } : prev);
+            }
+          } else if (baseClaims.role === "Worker") {
+            const workers = await api<{ id: string; email: string }[]>("api/Workers");
+            const matchingWorker = workers?.find(
+              (w) => w.email.toLowerCase() === baseClaims.email.toLowerCase()
+            );
+            if (matchingWorker) {
+              setUser((prev) => prev && prev.sub === baseClaims.sub ? { ...prev, workerId: matchingWorker.id } : prev);
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching user profile ID from backend:", err);
+        }
+      };
+
+      fetchProfileIds();
+    }
+  }, [token]);
 
   const value: AuthContextValue = {
     token,

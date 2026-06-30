@@ -9,12 +9,16 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/lib/auth/auth-context";
 import { RegisterType } from "@/lib/api/types";
+import { Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/auth/register")({
   head: () => ({
     meta: [
       { title: "Criar conta — Cabeleleira Leila" },
-      { name: "description", content: "Crie sua conta para agendar serviços ou trabalhar conosco." },
+      {
+        name: "description",
+        content: "Crie sua conta para agendar serviços ou trabalhar conosco.",
+      },
     ],
   }),
   component: RegisterPage,
@@ -33,7 +37,7 @@ function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -46,8 +50,7 @@ function RegisterPage() {
         registerType: Number(form.registerType) as RegisterType,
       });
       toast.success("Conta criada com sucesso!");
-      const dest =
-        claims?.role === "Worker" ? "/worker/dashboard" : "/client/book";
+      const dest = claims?.role === "Worker" ? "/worker/dashboard" : "/client/book";
       router.navigate({ to: dest });
     } catch (err) {
       toast.error((err as Error).message || "Não foi possível cadastrar.");
@@ -55,6 +58,45 @@ function RegisterPage() {
       setLoading(false);
     }
   };
+
+  const onlyDigits = (value: string) => value.replace(/\D/g, "");
+
+  const formatCpf = (value: string) => {
+    const digits = onlyDigits(value).slice(0, 11);
+
+    return digits
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2");
+  };
+
+  const formatPhone = (value: string) => {
+    // Store with country code (55)
+    let digits = onlyDigits(value);
+
+    if (!digits.startsWith("55")) {
+      digits = "55" + digits;
+    }
+
+    digits = digits.slice(0, 13); // 55 + AA + 9 + 8 digits
+
+    const local = digits.slice(2);
+
+    if (!local.length) return "+55";
+
+    if (local.length <= 2) {
+      return `+55 (${local}`;
+    }
+
+    if (local.length <= 7) {
+      return `+55 (${local.slice(0, 2)}) ${local.slice(2)}`;
+    }
+
+    return `+55 (${local.slice(0, 2)}) ${local.slice(2, 7)} ${local.slice(7)}`;
+  };
+
+  const isWorker = Number(form.registerType) === RegisterType.Worker;
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,7 +113,13 @@ function RegisterPage() {
                 <Label>Tipo de conta</Label>
                 <RadioGroup
                   value={form.registerType}
-                  onValueChange={(v) => setForm({ ...form, registerType: v })}
+                  onValueChange={(v) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      registerType: v,
+                      //cpf: Number(v) === RegisterType.Worker ? prev.cpf : "",
+                    }))
+                  }
                   className="grid grid-cols-2 gap-2"
                 >
                   <Label className="flex cursor-pointer items-center gap-2 rounded-md border p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-secondary">
@@ -87,25 +135,93 @@ function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="name">Nome completo</Label>
-                <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <Input
+                  id="name"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className={`grid gap-3 ${isWorker ? "grid-cols-2" : "grid-cols-1"}`}>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
-                  <Input id="phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <Input
+                    id="phone"
+                    required
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    value={formatPhone(form.phone)}
+                    onChange={(e) => {
+                      let digits = onlyDigits(e.target.value);
+
+                      if (!digits.startsWith("55")) {
+                        digits = "55" + digits;
+                      }
+
+                      setForm({
+                        ...form,
+                        phone: digits,
+                      });
+                    }}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cpf">CPF</Label>
-                  <Input id="cpf" required value={form.cpf} onChange={(e) => setForm({ ...form, cpf: e.target.value })} />
-                </div>
+
+                {isWorker && (
+                  <div className="space-y-2">
+                    <Label htmlFor="cpf">CPF</Label>
+                    <Input
+                      id="cpf"
+                      required={isWorker}
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={formatCpf(form.cpf)}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          cpf: onlyDigits(e.target.value).slice(0, 11),
+                        })
+                      }
+                    />
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
-                <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Senha</Label>
-                <Input id="password" type="password" required minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={6}
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className="pr-10"
+                  />
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <span className="sr-only">
+                      {showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    </span>
+                  </Button>
+                </div>
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Criando..." : "Criar conta"}

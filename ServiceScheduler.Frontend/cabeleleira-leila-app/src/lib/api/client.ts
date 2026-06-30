@@ -68,7 +68,18 @@ export async function api<T = unknown>(path: string, opts: RequestOpts = {}): Pr
     } catch {
       /* ignore */
     }
-    throw new ApiError(res.status, `${method} ${path} → ${res.status}`, payload);
+    
+    let message = `${method} ${path} → ${res.status}`;
+
+    if (typeof payload === "object" && payload !== null) {
+      if ("errorMessage" in payload) {
+        message = String((payload as { errorMessage: string }).errorMessage);
+      } else if ("detail" in payload) {
+        message = String((payload as { detail: string }).detail);
+      }
+    }
+
+    throw new ApiError(res.status, message, payload);
   }
   if (res.status === 204) return undefined as T;
   const txt = await res.text();
