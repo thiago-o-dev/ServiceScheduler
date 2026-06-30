@@ -64,6 +64,6 @@ public class ServicesController(IRequestDispatcher dispatcher) : ControllerBase
     {
         var query = new GetServiceAvailableHoursQuery(id, date.Date, date.Date.AddHours(24), workerId);
         var result = await dispatcher.SendAsync(query, cancellationToken);
-        return Ok(result.First().Value);
+        return Ok(result);
     }
 }
