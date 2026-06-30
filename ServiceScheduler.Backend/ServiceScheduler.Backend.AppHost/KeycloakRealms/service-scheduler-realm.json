@@ -94,7 +94,7 @@
       "email": "cliente@demo.com",
       "emailVerified": true,
       "firstName": "Cliente",
-      "lastName": "Demonstração",
+      "lastName": "Demonstracao",
       "credentials": [
         {
           "type": "password",
